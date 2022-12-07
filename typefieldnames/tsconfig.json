@@ -1,0 +1,29 @@
+{
+    "compilerOptions": {
+        "allowSyntheticDefaultImports": true,
+        "declaration": false,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "esModuleInterop": true,
+        "isolatedModules": false,
+        "jsx": "react",
+        "lib": ["dom","es2015"],
+        "module": "esnext",
+        "moduleResolution": "nodeNext",
+        "noImplicitAny": false,
+        "noLib": false,
+        "outDir": "./build",
+        "removeComments": true,
+        "target": "esnext",
+        "types": [
+            "jest", "node"
+        ]
+    },
+    "exclude": [
+        "node_modules",
+        "typings"
+    ],
+    "include": [
+        "src/ts/index.ts"
+      ]
+}

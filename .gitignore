@@ -1,0 +1,8 @@
+node_modules/
+build/**/*.js
+coverage/
+
+.project
+.settings
+.DS_Store
+index.js

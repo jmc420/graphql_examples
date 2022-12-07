@@ -1,0 +1,28 @@
+{
+    "name": "graphql_typefieldnames",
+    "type": "module",
+    "version": "1.0.0",
+    "dependencies": {
+      "graphql": "^15.8.0",
+      "graphql-tag": "^2.12.6",
+      "loglevel": "1.6.7"
+    },
+    "devDependencies": {
+      "@types/jest": "26.0.20",
+      "@types/node": "^14.14.22",
+      "jest": "27.1.0",
+      "nodemon": "^2.0.15",
+      "typescript": "4.7.4"
+    },
+    "engines": {
+      "node": ">=5.0.0"
+    },
+    "scripts": {
+      "all": "npm run compile",
+      "clean": "rm -fr ./node_modules ./build/*",
+      "compile": "tsc $*",
+      "exec": "node build/index.js $*",
+      "test": "jest $*"
+    }
+  }
+  

@@ -1,4 +1,5 @@
-import { buildSchema, DocumentNode, GraphQLError, GraphQLSchema, parse, validateSchema } from "graphql";
+import { buildSchema, DocumentNode, FieldDefinitionNode, GraphQLError, GraphQLNamedType, GraphQLObjectType, GraphQLSchema, ObjectTypeDefinitionNode, parse, validateSchema } from "graphql";
+import { Maybe } from "graphql/jsutils/Maybe.js";
 import { validateSDL } from "graphql/validation/validate.js";
 
 export interface IGQLParserResult {
@@ -31,27 +32,52 @@ export function gqlParse(gql: string): IGQLParserResult {
         }
     }
     catch (e) {
-        console.log("Error "+typeof(e))
+        console.log("Error " + typeof (e))
         return {
             errors: [e]
         }
     }
 }
 
-const qglErrorExpected = `
-input Data {
-    someField: String!
-    anotherField: String!
-}
-directive @someDirective( args: [Data!]! ) on OBJECT
 
-type SomeType @someDirective( args: [{someField: "blah", anotherField: "blah"}] ) 
-{
-    column1: String
+function printTypeFieldNames(gqlSchema: GraphQLSchema) {
+    const typeMap = gqlSchema.getTypeMap();
+    const objectTypes: ObjectTypeDefinitionNode[] = [];
+  
+    Object.keys(typeMap).forEach(key => {
+      const type: GraphQLNamedType = typeMap[key];
+      const objectType: GraphQLObjectType = type as GraphQLObjectType;
+      const astNode: Maybe<ObjectTypeDefinitionNode> = objectType.astNode;
+  
+      if (astNode != null && astNode.kind == 'ObjectTypeDefinition') {
+        objectTypes.push(astNode);
+      }
+    })
+  
+    objectTypes.map((objectType) => {
+        const typeName = objectType.name.value;
+
+        console.log("\nType: "+typeName+" has following fields:\n ")
+        const fields: readonly FieldDefinitionNode[] = objectType.fields;
+
+        fields.forEach((field: FieldDefinitionNode) => {
+            console.log("\tField name: "+field.name.value);
+        })
+    })
 }
-type AnotherType @someDirective( args: [{blah: "blah", blah2: "blah"}] ) 
-{
-    column2: String
+
+const gql = `
+
+type Ship {
+    id: ID!
+    name: String!
+    owner: ShipOwner!
+}
+
+type ShipOwner {
+    id: ID!
+    name: String!
+    vessels: [Ship!]!
 }
 
 type Query {
@@ -68,7 +94,6 @@ function printErrors(result: IGQLParserResult) {
     else {
         console.log("No errors")
     }
-   
 }
 
 function getLocation(error: GraphQLError) {
@@ -80,13 +105,13 @@ function getLocation(error: GraphQLError) {
     }
     return "";
 }
-const result:IGQLParserResult = gqlParse(qglErrorExpected);
+const result: IGQLParserResult = gqlParse(gql);
 
 if (result.errors.length > 0) {
     printErrors(result);
 }
 else {
-    console.log("Errors should have been reported")
+    printTypeFieldNames(result.gqlSchema);
 }
 
 
