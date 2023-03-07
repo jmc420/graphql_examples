@@ -38,9 +38,11 @@ const resolvers = {
 
 const rootValue = {
     subscription: {
-        greeting: async function* () {
-            for (const hi of ['Hi', 'Bonjour', 'Hola', 'Ciao', 'Zdravo']) {
-                yield { greetings: hi };
+        greeting: {
+            subscribe: async function* () {
+                for (const hi of ['Hi', 'Bonjour', 'Hola', 'Ciao', 'Zdravo']) {
+                    yield { greetings: hi };
+                }
             }
         }
     }
