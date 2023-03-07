@@ -27,29 +27,28 @@ function getSchema(): GraphQLSchema {
     return buildSchema(gql);
 }
 
-const rootValue = {
-
+const resolvers = {
     sayHello: () => {
         return "Hello"
     },
-
     sendMessage: ({ message }) => {
         return "You said " + message
-    },
+    }
+}
 
-    greeting: {
-        subscribe: async function* () {
+const rootValue = {
+    subscription: {
+        greeting: async function* () {
             for (const hi of ['Hi', 'Bonjour', 'Hola', 'Ciao', 'Zdravo']) {
                 yield { greetings: hi };
             }
         }
     }
-
 }
 
 export default async function webServer() {
     const schema: GraphQLSchema = getSchema();
-    const handler = createHandler({ schema: schema, rootValue: rootValue });
+    const handler = createHandler({ schema: schema, rootValue: resolvers });
 
     const app = express();
 
@@ -60,7 +59,7 @@ export default async function webServer() {
             server,
             path: '/graphql',
         });
-        useServer({ schema: schema }, wsServer);
+        useServer({ schema: schema, roots: rootValue }, wsServer);
         log.info(`Running on http://${HOST}:${PORT}`);
     });
 }
