@@ -3,6 +3,7 @@
   "type": "module",
   "version": "1.0.0",
   "dependencies": {
+    "@graphql-tools/schema": "^9.0.17",
     "express": "^4.17.3",
     "graphql": "^16.6.0",
     "graphql-http": "^1.16.0",
