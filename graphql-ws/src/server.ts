@@ -56,8 +56,7 @@ export default async function webServer() {
 
     const server = app.listen(PORT, HOST, () => {
         const wsServer = new ws.Server({
-            server,
-            path: '/graphql',
+            server
         });
         useServer({ schema: schema, roots: rootValue }, wsServer);
         log.info(`Running on http://${HOST}:${PORT}`);
