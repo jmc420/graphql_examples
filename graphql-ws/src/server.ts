@@ -25,12 +25,12 @@ const gql = `
 
 const resolvers = {
     Query: {
-        sayHello: (message) => {
-            return "Hello to "+message
+        sayHello: (_, { message }) => {
+            return "Hello to " + message
         },
     },
     Mutation: {
-        sendMessage: ({ message }) => {
+        sendMessage: (_, { message }) => {
             return "You said " + message
         }
     },
@@ -45,7 +45,7 @@ const resolvers = {
     }
 }
 
-const schema = makeExecutableSchema({typeDefs: gql, resolvers})
+const schema = makeExecutableSchema({ typeDefs: gql, resolvers })
 
 export default async function webServer() {
     const handler = createHandler({ schema: schema });
