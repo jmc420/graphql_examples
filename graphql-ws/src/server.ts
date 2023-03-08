@@ -1,43 +1,40 @@
 
 import express from 'express';
-import { buildSchema, GraphQLSchema } from 'graphql';
 import { createHandler } from 'graphql-http/lib/use/express';
 import log from 'loglevel';
 import { useServer } from 'graphql-ws/lib/use/ws';
+import { makeExecutableSchema } from '@graphql-tools/schema';
 import ws from 'ws';
 
 const PORT = 8080;
 const HOST = '0.0.0.0';
 
-function getSchema(): GraphQLSchema {
-    const gql = `
+const gql = `
     type Query {
         sayHello: String!
-      }
-      
-      type Mutation {
-        sendMessage(message:String!):String !
-      }
-      
-      type Subscription {
-          greeting: String!
-      }
-    `;
+        }
 
-    return buildSchema(gql);
-}
+        type Mutation {
+        sendMessage(message:String!):String !
+        }
+
+        type Subscription {
+            greeting: String!
+        }
+    `
 
 const resolvers = {
-    sayHello: () => {
-        return "Hello"
+    Query: {
+        sayHello: () => {
+            return "Hello"
+        },
     },
-    sendMessage: ({ message }) => {
-        return "You said " + message
-    }
-}
-
-const rootValue = {
-    subscription: {
+    Mutation: {
+        sendMessage: ({ message }) => {
+            return "You said " + message
+        }
+    },
+    Subscription: {
         greeting: {
             subscribe: async function* () {
                 for (const hi of ['Hi', 'Bonjour', 'Hola', 'Ciao', 'Zdravo']) {
@@ -48,9 +45,10 @@ const rootValue = {
     }
 }
 
+const schema = makeExecutableSchema({typeDefs: gql, resolvers})
+
 export default async function webServer() {
-    const schema: GraphQLSchema = getSchema();
-    const handler = createHandler({ schema: schema, rootValue: resolvers });
+    const handler = createHandler({ schema: schema });
 
     const app = express();
 
@@ -60,7 +58,7 @@ export default async function webServer() {
         const wsServer = new ws.Server({
             server
         });
-        useServer({ schema: schema, roots: rootValue }, wsServer);
+        useServer({ schema: schema }, wsServer);
         log.info(`Running on http://${HOST}:${PORT}`);
     });
 }
