@@ -11,22 +11,22 @@ const HOST = '0.0.0.0';
 
 const gql = `
     type Query {
-        sayHello: String!
-        }
+        sayHello(message:String!): String!
+    }
 
-        type Mutation {
+    type Mutation {
         sendMessage(message:String!):String !
-        }
+    }
 
-        type Subscription {
-            greeting: String!
-        }
+    type Subscription {
+        greeting: String!
+    }
     `
 
 const resolvers = {
     Query: {
-        sayHello: () => {
-            return "Hello"
+        sayHello: (message) => {
+            return "Hello to "+message
         },
     },
     Mutation: {

@@ -25,6 +25,7 @@
     "all": "npm run compile",
     "clean": "rm -fr ./node_modules ./build/*",
     "compile": "tsc $*",
+    "debug-server": "node --inspect-brk build/server.js",
     "server": "nodemon build/server.js $*",
     "test": "jest $*"
   }
